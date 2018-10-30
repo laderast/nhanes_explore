@@ -26,12 +26,14 @@ source("R/helper.R")
 library(NHANES)
 data("NHANES")
 
+##specify outcome variable here
+outcome_var <- c("Depressed")
+## specify covariates here (including outcome variable)
 covariates <- c("Gender", "Age", "Diabetes", "Race1", "MaritalStatus", "BMI", 
                 "BMI_WHO", "BPSysAve", "TotChol", "Depressed")
 
 myDataFrame <- data.table(NHANES)[,covariates,with=FALSE]
 
-outcome_var <- c("Depressed")
 remove_categories <- outcome_var
 categoricalVars <- sort(names(get_category_variables(myDataFrame)))
 cat_no_outcome <- setdiff(categoricalVars, remove_categories)
