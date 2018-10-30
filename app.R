@@ -15,6 +15,7 @@ library(naniar)
 library(visdat)
 library(skimr)
 library(readr)
+library(NHANES)
 
 source("R/helper.R")
 
@@ -23,7 +24,6 @@ source("R/helper.R")
 #load("data/bmi_diabetes.rda")
 #myDataFrame <- data.table(bmi_diabetes)
 
-library(NHANES)
 data("NHANES")
 
 ##specify outcome variable here
