@@ -29,8 +29,8 @@ data("NHANES")
 ##specify outcome variable here
 outcome_var <- c("Depressed")
 ## specify covariates here (including outcome variable)
-covariates <- c("Gender", "Age", "Diabetes", "Race1", "MaritalStatus", "BMI", 
-                "BMI_WHO", "BPSysAve", "TotChol", "Depressed")
+covariates <- c("Gender", "Age", "SurveyYr", "Race1", "MaritalStatus", "BMI", "HHIncome", "Education",
+                "BMI_WHO", "BPSysAve", "TotChol", "Depressed", "LittleInterest", "SleepHrsNight", "TVHrsDay", "AlcoholDay", "Marijuana")
 
 myDataFrame <- data.table(NHANES)[,covariates,with=FALSE]
 
@@ -69,13 +69,13 @@ ui <- dashboardPage(
                    tags$head(tags$style("#TxtOut {white-space: nowrap;}")),
                    fluidRow(column(12, offset=0, verbatimTextOutput("summaryTable")
                                    )
-                              )),
+                              ))#,
           
-          tabPanel("Missing Clusters", tags$head(tags$style("#TxtOut {white-space: nowrap;}")),
-                           fluidRow(column(12, offset=0, plotOutput("missing_clusters"))
-                                           )
-                   
-                   )
+          # tabPanel("Missing Clusters", tags$head(tags$style("#TxtOut {white-space: nowrap;}")),
+          #                  fluidRow(column(12, offset=0, plotOutput("missing_clusters"))
+          #                                  )
+          #          
+          #          )
           
          #tabPanel("Data Dictionary", 
           #         tags$head(tags$style("#TxtOut {white-space: nowrap;}")),
@@ -164,10 +164,10 @@ server <- function(input, output, session) {
       theme(axis.text.x=element_text(angle=90))
   })
   
-  output$missing_clusters <- renderPlot({
-    visdat::vis_miss(data.frame(dataOut()), cluster = TRUE) +
-      theme(axis.text.x = element_text(size = 15, angle = 90))
-  })
+  # output$missing_clusters <- renderPlot({
+  #   visdat::vis_miss(data.frame(dataOut()), cluster = TRUE) +
+  #     theme(axis.text.x = element_text(size = 15, angle = 90))
+  # })
   
   output$visdat <- renderPlot({
     visdat::vis_dat(data.frame(dataOut())) + 
@@ -198,7 +198,7 @@ server <- function(input, output, session) {
   
   proportionTable <- reactive({
     
-    out <- dataOut()[,c(input$condTab, "Diabetes"), with=FALSE]
+    out <- dataOut()[,c(input$condTab, outcome_var), with=FALSE]
     out
   })
   
@@ -213,10 +213,10 @@ server <- function(input, output, session) {
     print(input$condTab)
     
     percent_table <- proportionTable() %>% data.frame() %>% group_by(!!sym(input$condTab)) %>%
-      count(Diabetes) %>% mutate(ratio=scales::percent(n/sum(n)))
+      count(!!sym(outcome_var)) %>% mutate(ratio=scales::percent(n/sum(n)))
     
     proportionTable() %>% 
-      ggplot(aes_string(x=input$condTab, fill="Diabetes")) + 
+      ggplot(aes_string(x=input$condTab, fill=outcome_var)) + 
       geom_bar(position="fill", color="black") + theme(text=element_text(size=20), axis.text.x = element_text(angle = 90)) +
       geom_text(data = percent_table, mapping = aes(y=n, label=ratio), 
                 position=position_fill(vjust=0.5))
