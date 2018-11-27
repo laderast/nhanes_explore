@@ -27,14 +27,15 @@ source("R/helper.R")
 data("NHANES")
 
 ##specify outcome variable here
-outcome_var <- c("Depressed")
+outcome_var <- c("PhysActive")
 ## specify covariates here (including outcome variable)
 covariates <- c("Gender", "Age", "SurveyYr", "Race1", "Race3" ,"MaritalStatus", 
                 "BMI", "HHIncome", "Education",
                 "BMI_WHO", "BPSysAve", "TotChol", "Depressed", "LittleInterest", 
-                "PhysActive","PhysActiveDays",
-                "SleepHrsNight", "SleepTrouble", "TVHrsDay", "AlcoholDay", 
-                "Marijuana","RegularMarij","HardDrugs")
+                "PhysActive","PhysActiveDays","PhysActiveDaysAtLeast3",
+                "SleepHrsNight", "SleepTrouble", "TVHrsDay", "AlcoholDay", "SmokeNow","Marijuana", "RegularMarij","HardDrugs")
+
+NHANES <- NHANES %>% mutate(PhysActiveDaysAtLeast3=factor(1*(PhysActiveDays>=3),levels=c(0,1),labels=c("No","Yes")))
 
 myDataFrame <- data.table(NHANES)[,covariates,with=FALSE]
 
@@ -142,7 +143,9 @@ ui <- dashboardPage(
                      column(width=4, selectInput("x_var", "Select Y Variable", 
                                                  choices=numericVars, selected = numericVars[1])),
                      column(width=4, selectInput("y_var", "Select Y Variable", 
-                                                 choices=numericVars, selected = numericVars[2]))
+                                                 choices=numericVars, selected = numericVars[2])),
+                     column(width=4, selectInput("facet_var", "Select Facet Variable", 
+                                                 choices=c("NONE",categoricalVars), selected = "NONE"))
                    ),
                    fluidRow(plotOutput("corr_plot"))
           ))
@@ -256,9 +259,14 @@ server <- function(input, output, session) {
     
     corval <- signif(cor(xcol, ycol), digits = 3)
     
-    ggplot(dataOut(), aes_string(x=input$x_var, y=input$y_var)) +
+    p <- ggplot(dataOut(), aes_string(x=input$x_var, y=input$y_var)) +
       geom_miss_point() + stat_smooth(method=lm, se=FALSE) +
       ggtitle(paste(input$x_var, "vs.", input$y_var, "correlation =", corval)) 
+    if(input$facet_var=="NONE") {
+      p
+    }else{
+      p+facet_wrap(input$facet_var)
+    }
   })
   
 }
