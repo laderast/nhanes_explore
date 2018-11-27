@@ -32,8 +32,9 @@ outcome_var <- c("Depressed")
 covariates <- c("Gender", "Age", "SurveyYr", "Race1", "Race3" ,"MaritalStatus", 
                 "BMI", "HHIncome", "Education",
                 "BMI_WHO", "BPSysAve", "TotChol", "Depressed", "LittleInterest", 
+                "PhysActive","PhysActiveDays",
                 "SleepHrsNight", "SleepTrouble", "TVHrsDay", "AlcoholDay", 
-                "Marijuana", "RegularMarij", "HardDrugs")
+                "Marijuana","RegularMarij","HardDrugs")
 
 myDataFrame <- data.table(NHANES)[,covariates,with=FALSE]
 
