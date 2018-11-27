@@ -45,6 +45,7 @@ numericVars <- sort(get_numeric_variables(myDataFrame))
 numericVars <- setdiff(numericVars, remove_numeric)
 
 theme_set(theme_classic(base_size = 15))
+data_dictionary <- readr::read_csv("data/data_dictionary.csv")
 
 
 ##Don't modify anything below here.
@@ -71,7 +72,7 @@ ui <- dashboardPage(
                    tags$head(tags$style("#TxtOut {white-space: nowrap;}")),
                    fluidRow(column(12, offset=0, verbatimTextOutput("summaryTable")
                                    )
-                              ))#,
+                              )),#,
           
           # tabPanel("Missing Clusters", tags$head(tags$style("#TxtOut {white-space: nowrap;}")),
           #                  fluidRow(column(12, offset=0, plotOutput("missing_clusters"))
@@ -79,10 +80,10 @@ ui <- dashboardPage(
           #          
           #          )
           
-         #tabPanel("Data Dictionary", 
-          #         tags$head(tags$style("#TxtOut {white-space: nowrap;}")),
-          #         fluidRow(dataTableOutput("data_dictionary"))
-           #        )
+         tabPanel("Data Dictionary", 
+                   tags$head(tags$style("#TxtOut {white-space: nowrap;}")),
+                   fluidRow(dataTableOutput("data_dictionary"))
+                   )
           
             )
           ),
@@ -239,9 +240,9 @@ server <- function(input, output, session) {
     outPlot
   })
   
-#  output$data_dictionary <- renderDataTable(
-#    datatable(data_dictionary, options=list(pageLength=20))
-#  )
+  output$data_dictionary <- renderDataTable(
+    datatable(data_dictionary, options=list(pageLength=20))
+  )
   
   output$corr_plot <- renderPlot({
     
