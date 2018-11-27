@@ -33,9 +33,14 @@ covariates <- c("Gender", "Age", "SurveyYr", "Race1", "Race3" ,"MaritalStatus",
                 "BMI", "HHIncome", "Education",
                 "BMI_WHO", "BPSysAve", "TotChol", "Depressed", "LittleInterest", 
                 "PhysActive","PhysActiveDays","PhysActiveDaysAtLeast3",
-                "SleepHrsNight", "SleepTrouble", "TVHrsDay", "AlcoholDay", "SmokeNow","Marijuana")
+                "SleepHrsNight", "SleepTrouble", "SleepHrsNightCat","TVHrsDay", "AlcoholDay", "SmokeNow","Marijuana")
 
-NHANES <- NHANES %>% mutate(PhysActiveDaysAtLeast3=factor(1*(PhysActiveDays>=3),levels=c(0,1),labels=c("No","Yes")))
+NHANES <- NHANES %>% mutate(
+  PhysActiveDaysAtLeast3=factor(1*(PhysActiveDays>=3),levels=c(0,1),labels=c("No","Yes")),
+  SleepHrsNightCat=case_when(SleepHrsNight<6 ~ "<6",
+                             dplyr::between(SleepHrsNight,6,9) ~ "6-9",
+                             SleepHrsNight>9 ~ ">9",
+                             TRUE ~ as.character(NA)))
 
 myDataFrame <- data.table(NHANES)[,covariates,with=FALSE]
 
