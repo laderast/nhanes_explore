@@ -22,3 +22,4 @@
 5. Conclusions
     1. What are the strongest associations with depression?
     2. Are they what you expected?
+    3. Sampled structure of NHANES
