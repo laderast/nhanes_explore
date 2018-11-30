@@ -32,7 +32,8 @@ outcome_var <- c("Depressed")
 covariates <- c("Gender", "Age", "SurveyYr", "Race1", "Race3" ,"MaritalStatus", 
                 "BMI", "HHIncome", "Education",
                 "BMI_WHO", "BPSysAve", "TotChol", "Depressed", "LittleInterest", 
-                "SleepHrsNight", "SleepTrouble", "TVHrsDay", "AlcoholDay", "Marijuana", "RegularMarij", "HardDrugs")
+                "SleepHrsNight", "SleepTrouble", "TVHrsDay", "AlcoholDay", 
+                "Marijuana", "RegularMarij", "HardDrugs")
 
 myDataFrame <- data.table(NHANES)[,covariates,with=FALSE]
 
@@ -45,7 +46,8 @@ numericVars <- sort(get_numeric_variables(myDataFrame))
 numericVars <- setdiff(numericVars, remove_numeric)
 
 theme_set(theme_classic(base_size = 15))
-data_dictionary <- readr::read_csv("data/data_dictionary.csv")
+data_dictionary <- readr::read_csv("data/data_dictionary.csv") %>%
+  filter(VariableName %in% covariates)
 
 
 ##Don't modify anything below here.

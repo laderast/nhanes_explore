@@ -1,0 +1,184 @@
+---
+title: "Data Exploration and Wrangling"
+author: "Ted Laderas"
+date: "`r Sys.Date()`"
+output: slidy_presentation
+---
+
+```{r setup, include=FALSE}
+library(shiny)
+library(shinydashboard)
+library(ggplot2)
+library(dplyr)
+library(here)
+library(DT)
+library(data.table)
+library(naniar)
+library(visdat)
+library(skimr)
+library(readr)
+
+knitr::opts_chunk$set(echo = FALSE)
+data_dictionary <- read.csv(here("data/shhs-data-dictionary-0.13.1-variables.csv"))
+shhs_data_sub <- data.table(read_rds(here("data/common_data_small.rds")))
+
+```
+
+## Please Note
+
+This workshop adheres to the [BioData Club Code of Conduct](https://biodata-club.github.io/code_of_conduct/).  
+
+This is done to maintain a psychologically safe and inclusive environment for everyone. Please email me at laderast@ohsu.edu or text me (503-481-8470) if you see any potential violations.
+
+If you violate the CoC, you may be asked to leave.  
+
+## Our Overall Goal  
+
+- Look at NHANES data
+- Understand how the variables are defined
+- Understand associations between outcome and variable
+- Understand interactions between variables
+- Share insights about the data with each other
+
+
+## What is NHANES and why are we looking at it?
+
+- **N**ational **H**ealth **A**nd **N**utrition **E**xamination **S**urvey
+- Assess health/nutritional status of adults/children in the United States
+- Types of Survey Questions:
+    + Demographic (Age, Race, Gender, many more...)
+    + Socioeconomic (Marriage Status, Household Income, Education)
+    + Dietary (Foods consumed, dietary supplements)
+    + Health (Body Mass Index, Sleep Trouble, Depression)
+
+## Please Note
+
+- We're not going to look at all of NHANES.
+- We're looking at an extract from two years
+- We're ignoring how particpants were choses
+
+## Take a Look at the Data as a Sheet
+
+[NHANES Extract in Google Sheet Form](https://docs.google.com/spreadsheets/d/1cSZCyjqbBh1RWeP3fV3zRQxTN4vWw63IKwGKVG_Tp74/edit?usp=sharing)
+
+## NHANES is a valuable dataset in many ways
+
+
+
+
+## What is Exploratory Data Analysis?
+
+- Pioneered by John Tukey
+- Detective work on your data
+- An *attitude* towards data, not just techniques
+- 'Find patterns, reveal structure, and make tenative model assessments (Behrens)'
+
+## Remember
+
+"Exploratory data analysis can never be the whole story, but nothing else can serve as the foundation stone."
+- John Tukey, *Exploratory Data Analysis*
+
+## Why Look at your Data?  
+
+- Need to be aware of issues in the data!
+
+![Systolic Blood Pressure](img/F1.large.jpg)
+
+## Why Visualization?
+
+<img src="img/broadblock_original.jpg" height = 450>
+
+## EDA is about Visualization First
+
+- Visualization is a gateway
+- Understand the issues, not focus on coding right now
+- Build your foundation
+
+## Running the Explorer App
+
+We'll start exploring the data immediately!  
+
+Pick the App according to your outcome:  
+
++ [Depression](https://tladeras.shinyapps.io/nhanes_explore)
++ Physical Activity
++ Type 2 Diabetes
+
+
+
+## Map your questions to a tab:
+
+![Data Explorer](img/data-explorer.png)
+
+## What is the Overview Tab for?
+
+- Seeing how many variables are in the dataset and which type
+- Seeing missing values and complete cases
+- Looking up a variable in the data dictionary
+
+## Overview Tab
+
+  - What values are missing from the dataset overall? (Visual Summary)
+  - Are any numeric values skewed in distribution? (Tabular Summary)
+  - How is the variable defined? (Data Dictionary)
+  - What are the permissible values? (Data Dictionary)
+
+## Overview Scavenger Hunt
+
+1.  How many categorical variables are there?
+1.  How many missing Cardiovascular Disease Cases are there?
+1.  What is the mean age for the dataset?
+1.  How is `oahi` calculated?
+
+## What is the Category Tab for?
+
+- Should we add a categorical variable to our model?
+- Does my categorical variable have predictive value?
+- Does adding my variable affect the number of cases I can analyse?
+- Is my variable missing at random or not at random?
+- Is my categorical variable confounded with another categorical variable?
+
+## Categorical Tab
+
+  - What percentages exist for my categorical variable? (Single Category)
+  - Is my variable associated with outcome? (Category/Outcome)
+  - Is my variable associated with other variables? (Crosstab)
+  - Are the missing values of my variable evenly distributed? (Missing Data)
+  
+## Categorical Scavenger Hunt
+
+1. How many categories are there for `race`?
+1. Are the proportions of cvd cases balanced across `race`?
+1. If you are `male`, are you more likely to have cardiovascular disease?
+1. Is the proportion of missing data for `any_cvd` balanced across `race` categories? 
+
+## Continuous Tab
+
+- What is the distribution of my categorical variable? (Single Continuous)
+- Is my continuous variable associated with outcome? (Continuous/Outcome)
+- Is my continuous variable associated with another categorical variable? (Boxplot)
+- Is my continous variable associated with another continous variable? (Correlation)
+- Is my continuous variable missing values? (Correlation)
+
+## Continuous Scavenger Hunt
+
+1. As you get older, are you more likely to have CVD? 
+1. Is `age_s1` evenly distributed across `race`? If not, how are they distributed?
+1. Are `bmi_s1` and `neck20` correlated? Why do you think that's the case?
+1. Should we include both `bmi_s1` and `neck20` in our dataset?
+
+## Congratulations
+
+You are now a full fledged data explorer!
+
+![https://waynepelletier.com/work/tasty-icons](img/merit.png)
+
+## Overall
+
+- Data exploration is fun and detective work
+- Be curious! Start with a question
+- Assess the impact of adding your covariate to the model
+    - Does the distribution look like other populations?
+    - Is it associated with your outcome?
+    - Is it associated with other variables?
+    - Is the data missing in a suspicious way?

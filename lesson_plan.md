@@ -5,9 +5,10 @@
     a) Real world examples
     b) Why we do it
 3. Introduce the Shiny Interface (10 minutes)
-    a) Overview - How many patients in our dataset?
-    b) Categorical (factor = category)
-    c) Continuous
+    a) Have the NHANES data in spreadsheet form
+    b) Overview - How many patients in our dataset?
+    c) Categorical (factor = category)
+    d) Continuous
 4. Quick Answer questions
     1. How many missing values are there for Depression?
     2. How many people in the dataset have the "most" number of Depressive Episodes?
@@ -22,3 +23,5 @@
     2. Are any of the covariates associated with each other?
     3. Are the associations what you expected?
     4. Sampled structure of NHANES
+
+
