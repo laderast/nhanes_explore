@@ -22,6 +22,7 @@
     1. What are the characteristics of people who have missing responses for PhysActive?
     1. How does missingness and responses in PhysActive relate to responses and missingness in PhysActiveDays and PhysActiveDaysAtLeast3? How does the proportion of missingness in PhysActiveDaysAtLeast3 relate to PhysActive response? Is this what you would expect?
     1. Is there something strange about `Age`?
+    1. What is the median and interquartile range of PhysActiveDays?
     1. Is number of sleep hours associated with physical activity?
     1. What about levels of education?
     1. What about BMI? Is the association of BMI with physical activity dependent on which measure of activity you use -- PhysActive (yes/no) or PhysActiveDaysAtLeast3?
