@@ -16,6 +16,7 @@ library(visdat)
 library(skimr)
 library(readr)
 library(NHANES)
+library(janitor)
 
 source("R/helper.R")
 
@@ -102,8 +103,10 @@ ui <- dashboardPage(
                 ),
           
                 tabPanel("Category/Outcome",
-                   selectInput(inputId = "condTab", "Select Variable to Calculate Proportions",
-                               choices=cat_no_outcome, selected=cat_no_outcome[1]),
+                   selectInput(inputId = "condTab1", "Select X-axis Variable to Calculate Proportions",
+                               choices=categoricalVars, selected=cat_no_outcome[1]),
+                   selectInput(inputId = "condTab2", "Select Fill/Outcome Variable",
+                               choices=outcome_var, selected=outcome_var),
                    plotOutput("proportionBarplot")
           
                    ),
@@ -111,7 +114,7 @@ ui <- dashboardPage(
                    selectInput(inputId = "crossTab1", "Select Crosstab Variable (x)", 
                                choices=categoricalVars, selected=categoricalVars[1]),
                    selectInput(inputId = "crossTab2", "Select Crosstab Variable (y)", 
-                               choices=categoricalVars, selected=categoricalVars[1]),
+                               choices=outcome_var, selected=outcome_var),
                    verbatimTextOutput("crossTab")
           ),
           
@@ -200,14 +203,40 @@ server <- function(input, output, session) {
   
   output$crossTab <- renderPrint({
     
-    out <- dataOut()[,c(input$crossTab1, input$crossTab2), with=FALSE]
-    tab <- table(out, useNA = "ifany")
+    tab <- dataOut() %>% 
+      tabyl(!!sym(input$crossTab1), !!sym(input$crossTab2)) %>% 
+      adorn_totals() %>%
+      adorn_percentages() %>% 
+      adorn_pct_formatting() %>% 
+      adorn_ns()
+    #out <- dataOut()[,c(input$crossTab1, input$crossTab2), with=FALSE]
+    #tab <- table(out, useNA = "ifany")
     tab
+  })
+  
+  observe({
+    condTab1_selected <- input$condTab1
+    condTab2_selected <- input$condTab2
+    
+    updateSelectInput(session, "condTab2",
+                      choices = setdiff(categoricalVars,condTab1_selected),
+                      selected = condTab2_selected)
+    
+    })
+  
+  observe({
+    crossTab1_selected <- input$crossTab1
+    crossTab2_selected <- input$crossTab2
+    
+    updateSelectInput(session, "crossTab2",
+                      choices = setdiff(categoricalVars,crossTab1_selected),
+                      selected = crossTab2_selected)
+    
   })
   
   proportionTable <- reactive({
     
-    out <- dataOut()[,c(input$condTab, outcome_var), with=FALSE]
+    out <- dataOut()[,c(input$condTab1, input$condTab2), with=FALSE]
     out
   })
   
@@ -219,13 +248,14 @@ server <- function(input, output, session) {
   
   output$proportionBarplot <- renderPlot({
     
-    print(input$condTab)
+    print(input$condTab1)
+    print(input$condTab2)
     
-    percent_table <- proportionTable() %>% data.frame() %>% group_by(!!sym(input$condTab)) %>%
-      count(!!sym(outcome_var)) %>% mutate(ratio=scales::percent(n/sum(n)))
+    percent_table <- proportionTable() %>% data.frame() %>% group_by(!!sym(input$condTab1)) %>%
+      count(!!sym(input$condTab2)) %>% mutate(ratio=scales::percent(n/sum(n)))
     
     proportionTable() %>% 
-      ggplot(aes_string(x=input$condTab, fill=outcome_var)) + 
+      ggplot(aes_string(x=input$condTab1, fill=input$condTab2)) + 
       geom_bar(position="fill", color="black") + theme(text=element_text(size=20), axis.text.x = element_text(angle = 90)) +
       geom_text(data = percent_table, mapping = aes(y=n, label=ratio), 
                 position=position_fill(vjust=0.5))
