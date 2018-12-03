@@ -26,7 +26,7 @@
     1. What about levels of education?
     1. What about BMI?
 6. Conclusions
-    1. What are the strongest associations with depression?
+    1. What are the strongest associations with your outcome of choice?
     2. Are any of the covariates associated with each other?
     3. Are the associations what you expected?
     4. Sampled structure of NHANES
