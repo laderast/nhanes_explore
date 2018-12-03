@@ -17,14 +17,14 @@
     6. Is marijuana use associated with depression?
     7. What about sleep trouble?
     8. How is sleep trouble and marijuana use related?
-5. Quick Answer questions - Physical Activity
+5. Quick Answer questions - Physical Activity (See app [https://minnier.shinyapps.io/nhanes_explore_physactive/](https://minnier.shinyapps.io/nhanes_explore_physactive/))
     1. How many missing values are there for PhysActive (yes/no physically active)?
     1. What are the characteristics of people who have missing responses for PhysActive?
     1. How does missingness and responses in PhysActive relate to responses and missingness in PhysActiveDays and PhysActiveDaysAtLeast3? How does the proportion of missingness in PhysActiveDaysAtLeast3 relate to PhysActive response? Is this what you would expect?
     1. Is there something strange about `Age`?
     1. Is number of sleep hours associated with physical activity?
     1. What about levels of education?
-    1. What about BMI?
+    1. What about BMI? Is the association of BMI with physical activity dependent on which measure of activity you use -- PhysActive (yes/no) or PhysActiveDaysAtLeast3?
 6. Conclusions
     1. What are the strongest associations with your outcome of choice?
     2. Are any of the covariates associated with each other?
