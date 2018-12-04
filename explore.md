@@ -12,6 +12,7 @@ JM
 -   [Is number of sleep hours associated with physical activity? Consider using the categorized variable `SleepHrsNightCat`.](#is-number-of-sleep-hours-associated-with-physical-activity-consider-using-the-categorized-variable-sleephrsnightcat.)
 -   [What about levels of education?](#what-about-levels-of-education)
 -   [What about BMI? Is the association of BMI with physical activity dependent on which measure of activity you use -- PhysActive (yes/no) or PhysActiveDaysAtLeast3?](#what-about-bmi-is-the-association-of-bmi-with-physical-activity-dependent-on-which-measure-of-activity-you-use----physactive-yesno-or-physactivedaysatleast3)
+-   [Are there other covariates you expect to be associated with physical activity? How do they relate to each other?](#are-there-other-covariates-you-expect-to-be-associated-with-physical-activity-how-do-they-relate-to-each-other)
 -   [Data Dictionary](#data-dictionary)
 
 This is a report showing possible answers posed in the lesson plan on [github](https://github.com/laderast/nhanes_explore/blob/master/lesson_plan.md).
@@ -361,6 +362,94 @@ ggplot(myDataFrame, aes(x=factor(PhysActiveDays), y=BMI, fill=factor(PhysActiveD
 ```
 
 ![](explore_files/figure-markdown_github/unnamed-chunk-15-3.png)
+
+Are there other covariates you expect to be associated with physical activity? How do they relate to each other?
+================================================================================================================
+
+We've explored hours of sleep, BMI, and education. There are other lifestyle variables such as hours of TV watched, depression, smoking, Marijuana use, that might be related to physical activity. These are likely associated with each other through a myriad of causal effect pathways.
+
+First, we can note how education and number of hours of sleep per night are also associated, so education may be a confounder in the association of hours per sleep and physical activity.
+
+``` r
+percent_table <- myDataFrame %>% data.frame() %>% group_by(Education) %>%
+      count(SleepHrsNightCat) %>% mutate(ratio=scales::percent(n/sum(n)))
+    
+myDataFrame %>% 
+      ggplot(aes(x=Education, fill=SleepHrsNightCat)) + 
+      geom_bar(position="fill", color="black") + 
+  theme(text=element_text(size=20), 
+        axis.text.x = element_text(angle = 90)) +
+      geom_text(data = percent_table, mapping = aes(y=n, label=ratio), 
+                position=position_fill(vjust=0.5))
+```
+
+![](explore_files/figure-markdown_github/unnamed-chunk-16-1.png)
+
+Physical activity is also associated with several other health outcomes including depression and diabetes:
+
+``` r
+percent_table <- myDataFrame %>% data.frame() %>% group_by(PhysActive) %>%
+      count(Depressed) %>% mutate(ratio=scales::percent(n/sum(n)))
+    
+myDataFrame %>% 
+      ggplot(aes(fill=Depressed, x=PhysActive)) + 
+      geom_bar(position="fill", color="black") + 
+  theme(text=element_text(size=20), 
+        axis.text.x = element_text(angle = 90)) +
+      geom_text(data = percent_table, mapping = aes(y=n, label=ratio), 
+                position=position_fill(vjust=0.5))
+```
+
+![](explore_files/figure-markdown_github/unnamed-chunk-17-1.png)
+
+``` r
+percent_table <- myDataFrame %>% data.frame() %>% group_by(PhysActive) %>%
+      count(Diabetes) %>% mutate(ratio=scales::percent(n/sum(n)))
+    
+myDataFrame %>% 
+      ggplot(aes(x=PhysActive, fill=Diabetes)) + 
+      geom_bar(position="fill", color="black") + 
+  theme(text=element_text(size=20), 
+        axis.text.x = element_text(angle = 90)) +
+      geom_text(data = percent_table, mapping = aes(y=n, label=ratio), 
+                position=position_fill(vjust=0.5))
+```
+
+![](explore_files/figure-markdown_github/unnamed-chunk-18-1.png)
+
+Risk factors such as smoking and TV hours per day are also related. People who smoke are less likely to be physically active.
+
+``` r
+percent_table <- myDataFrame %>% data.frame() %>% group_by(SmokeNow) %>%
+      count(PhysActive) %>% mutate(ratio=scales::percent(n/sum(n)))
+    
+myDataFrame %>% 
+      ggplot(aes(x=SmokeNow, fill=PhysActive)) + 
+      geom_bar(position="fill", color="black") + 
+  theme(text=element_text(size=20), 
+        axis.text.x = element_text(angle = 90)) +
+      geom_text(data = percent_table, mapping = aes(y=n, label=ratio), 
+                position=position_fill(vjust=0.5))
+```
+
+![](explore_files/figure-markdown_github/unnamed-chunk-19-1.png)
+
+The relationship between number of TV hours and physical activity is somewhat strange, since those who said 0 hours of TV have a large proportion of not physically active, but 0-1 hours has a much lower proportion of non-physically active and that proportion increases with the number of hours of TV watched. Perhaps people who say no TV are somehow different than people who admit to watching a small amount of TV.
+
+``` r
+percent_table <- myDataFrame %>% data.frame() %>% group_by(TVHrsDay) %>%
+      count(PhysActive) %>% mutate(ratio=scales::percent(n/sum(n)))
+    
+myDataFrame %>% 
+      ggplot(aes(x=TVHrsDay, fill=PhysActive)) + 
+      geom_bar(position="fill", color="black") + 
+  theme(text=element_text(size=20), 
+        axis.text.x = element_text(angle = 90)) +
+      geom_text(data = percent_table, mapping = aes(y=n, label=ratio), 
+                position=position_fill(vjust=0.5))
+```
+
+![](explore_files/figure-markdown_github/unnamed-chunk-20-1.png)
 
 Data Dictionary
 ===============
