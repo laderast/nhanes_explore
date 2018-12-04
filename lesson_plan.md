@@ -26,6 +26,7 @@
     1. Is number of sleep hours associated with physical activity? Consider using the categorized variable `SleepHrsNightCat`.
     1. What about levels of education?
     1. What about BMI? Is the association of BMI with physical activity dependent on which measure of activity you use -- `PhysActive` (yes/no) or `PhysActiveDaysAtLeast3`?
+    1. Are there other covariates you expect to be associated with physical activity? How do they relate to each other?
 6. Conclusions
     1. What are the strongest associations with your outcome of choice?
     2. Are any of the covariates associated with each other?
