@@ -33,6 +33,7 @@ outcome_var <- c("PhysActive")
 covariates <- c("Gender", "Age", "SurveyYr", "Race1", "Race3" ,"MaritalStatus", 
                 "BMI", "HHIncome", "Education",
                 "BMI_WHO", "BPSysAve", "TotChol", "Depressed", "LittleInterest", 
+                "Pulse", "Diabetes", "DiabetesAge",
                 "PhysActive","PhysActiveDays","PhysActiveDaysAtLeast3",
                 "SleepHrsNight", "SleepTrouble", "TVHrsDay", "AlcoholDay", "SmokeNow","Marijuana", "RegularMarij","HardDrugs")
 
@@ -51,6 +52,13 @@ numericVars <- setdiff(numericVars, remove_numeric)
 theme_set(theme_classic(base_size = 15))
 data_dictionary <- readr::read_csv("data/data_dictionary.csv") %>%
   filter(VariableName %in% covariates)
+
+data_dictionary <- data_dictionary %>%
+  add_row(VariableName = "PhysActiveDaysAtLeast3",
+          Definition = "PhysActiveDays>=3 ~ Yes, PhysActiveDays < 3 ~ No") %>%
+  add_row(VariableName = "SleepHrsNightCat",
+          Definition = "SleepHrsNight categorized into <6hrs, [6-9]hrs, >9hrs") %>%
+  arrange(VariableName)
 
 
 ##Don't modify anything below here.
@@ -135,10 +143,14 @@ ui <- dashboardPage(
                    plotOutput("distPlot")
           ),
           tabPanel("Boxplot Explorer",
-                   fluidRow(column(width = 4, selectInput(inputId = "numericVarBox", "Select Numeric Variable", 
-                                                          choices = numericVars, selected=numericVars[1])),
-                            column(width=4,selectInput(inputId = "catVarBox", "Select Category to Condition on", 
-                                                       choices = categoricalVars, selected=categoricalVars[1]))),
+                   fluidRow(
+                     column(width = 4, selectInput(inputId = "numericVarBox", "Select Numeric Variable", 
+                                                   choices = numericVars, selected=numericVars[1])),
+                     column(width=4,selectInput(inputId = "catVarBox", "Select Category to Condition on", 
+                                                choices = categoricalVars, selected=categoricalVars[1])),
+                     column(width=4, selectInput(inputId = "facet_var_boxplot", "Select Facet Variable", 
+                                                 choices=c("NONE",categoricalVars), selected = "NONE"))
+                   ),
                    plotOutput("boxPlot")
           ),
           tabPanel("Correlation Explorer", 
@@ -273,7 +285,11 @@ server <- function(input, output, session) {
   output$boxPlot <- renderPlot({
     outPlot <- ggplot(dataOut(), aes_string(x=input$catVarBox, y=input$numericVarBox, fill=input$catVarBox)) + 
       geom_boxplot() + theme(text=element_text(size=20), axis.text.x = element_text(angle=90))
-    outPlot
+    if(input$facet_var_boxplot=="NONE") {
+      outPlot
+    }else{
+      outPlot+facet_wrap(input$facet_var_boxplot)
+    }
   })
   
   output$data_dictionary <- renderDataTable(
