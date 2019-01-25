@@ -242,9 +242,9 @@ If you have a lot of depressed episodes, do you also get less sleep?
 
 ## Let's start the scavenger hunt
 
-- [Depression Questions](http://github.com/laderast/depression.md)
-- [Physical Activity Questions](http://github.com/laderast/phys_activity.md)
-- [Type 2 Diabetes Questions](http://github.com/laderast/diabetes.md)
+- [Depression Questions](http://github.com/laderast/nhanes_explore/depression.md)
+- [Physical Activity Questions](http://github.com/laderast/nhanes_explore/phys_activity.md)
+- [Type 2 Diabetes Questions](http://github.com/laderast/nhanes_explore/diabetes.md)
 
 
 ## Let's learn from each other
