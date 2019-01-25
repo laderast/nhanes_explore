@@ -151,9 +151,10 @@ See if you can answer it!
 
 We'll start exploring the data immediately!  
 
-Go to the app below:
+Go to the apps below:
 
-+ [Shiny App](https://minnier.shinyapps.io/nhanes_explore_physactive/)
++ [Shiny App 1](https://kcvi.shinyapps.io/nhanes_explore/)
++ [Shiny App 2](https://minnier.shinyapps.io/nhanes_explore_physactive/)
 
 We'll separate the scavenger hunt by outcome, and we'll ask questions, and then come back to present.
 
