@@ -234,7 +234,7 @@ If you get less sleep, are you more likely to be depressed?
 
 - Depression Questions are here: 
 - Physical Activity Questions are here:
-- 
+- Type 2 Diabetes Questions are here: 
 
 
 ## Let's learn from each other
@@ -252,10 +252,16 @@ You are now a full fledged data explorer!
 
 ![https://waynepelletier.com/work/tasty-icons](img/merit.png)
 
+## Please!
+
+Fill out our post survey form - we need this info to do more workshops!
+
+[Post Survey Form](https://docs.google.com/forms/d/e/1FAIpQLSe4bssQM1My2DHbna39Ka0vqGuaVyW4JNzJLEy7FyP0GPlWhQ/viewform?usp=sf_link)
+
 
 ## Let's do more scavenger hunts
 
-Are there interesting public datasets that people want to look at?
+Are there other interesting public datasets that people want to look at?
 
 We can build apps for them!
 
