@@ -1,6 +1,6 @@
 ---
-title: "Data Exploration and Wrangling"
-author: "Ted Laderas"
+title: "Data Exploration of NHANES"
+author: "Ted Laderas, Jessica Minnier, Thomas Frohwein"
 date: "`r Sys.Date()`"
 output: slidy_presentation
 ---
@@ -19,10 +19,11 @@ library(skimr)
 library(readr)
 
 knitr::opts_chunk$set(echo = FALSE)
-data_dictionary <- read.csv(here("data/shhs-data-dictionary-0.13.1-variables.csv"))
-shhs_data_sub <- data.table(read_rds(here("data/common_data_small.rds")))
-
 ```
+
+## Introductions
+
+
 
 ## Please Note
 
@@ -32,6 +33,7 @@ This is done to maintain a psychologically safe and inclusive environment for ev
 
 If you violate the CoC, you may be asked to leave.  
 
+
 ## Our Overall Goal  
 
 - Look at NHANES data
@@ -39,6 +41,31 @@ If you violate the CoC, you may be asked to leave.
 - Understand associations between outcome and variable
 - Understand interactions between variables
 - Share insights about the data with each other
+
+
+## Why are we here?
+
+- Further exposure to methods used by others
+- Just getting some more hands-on experience.
+- A better way to work up my experimental data
+- Learn more about exploratory data analysis
+- Some confidence that I can actually learn this and a kick in the pants to get started! I've taken stats classes, but they were many years ago.
+- To get better at EDA with my work.
+- Just looking to continue learning.
+- Learning habits and approaches from other users. Also willing to help out newer users.
+- Interested to see how an information/data scavenger hunt is set up
+- I mostly work with data visualization and don't get to do much analysis, so I need practice!
+- Hands-on practice with EDA
+- The ability to do EDA in an open source platform.
+- A feel for what it's like to do exploratory analysis.
+- More data science skills to apply to the working world.
+- To get better at analyzing data
+- I would like to get more comfortable with data science tools and methods. I would also like to formulate a side-project that I can build on in the near future.
+- A better grasp of the practice of data science and experience that can be applied to my career.
+- Seeing different approaches and tools, collaboration
+- To get an introduction to the mathematical methods behind analyzing and exploring data.
+- Increase my comfort with R and statistical analyses!
+- Seeing how burro works again because I didn't have a laptop for the Data Wrangling Workshop.
 
 
 ## What is NHANES and why are we looking at it?
@@ -54,8 +81,9 @@ If you violate the CoC, you may be asked to leave.
 ## Please Note
 
 - We're not going to look at all of NHANES.
-- We're looking at an extract from two years
-- We're ignoring how particpants were choses
+- We're looking at an extract from two years of the survey (which years?)
+- We're ignoring how particpants were chosen/sampled from the larger population
+    + We'll talk a a little about this later.
 
 ## Take a Look at the Data as a Sheet
 
@@ -63,8 +91,23 @@ If you violate the CoC, you may be asked to leave.
 
 ## NHANES is a valuable dataset in many ways
 
+We can understand an outcome and look at its association with measured variables in the data.
 
+Let's look at three outcomes today:
 
+- Depression
+- Type 2 Diabetes
+- Physical Activity
+
+## Before we Start
+
+Get into groups by your chosen outcome. Introduce yourselves, and pair off within your groups
+
+Come up with one question about your outcome you're curious about. 
+
+What do you expect is the case?
+
+See if you can answer it!
 
 ## What is Exploratory Data Analysis?
 
@@ -98,23 +141,25 @@ If you violate the CoC, you may be asked to leave.
 
 We'll start exploring the data immediately!  
 
-Pick the App according to your outcome:  
+Go to the app below:
 
-+ [Depression](https://tladeras.shinyapps.io/nhanes_explore)
-+ Physical Activity
-+ Type 2 Diabetes
++ [Shiny App](https://minnier.shinyapps.io/nhanes_explore_physactive/)
 
-
+We'll separate the scavenger hunt by outcome, and we'll ask questions, and then come back to present.
 
 ## Map your questions to a tab:
 
-![Data Explorer](img/data-explorer.png)
+- Overview
+- Categorical Variable
+- Continuous Variables
 
 ## What is the Overview Tab for?
 
 - Seeing how many variables are in the dataset and which type
 - Seeing missing values and complete cases
 - Looking up a variable in the data dictionary
+
+![Data Explorer](img/data-explorer.png)
 
 ## Overview Tab
 
@@ -123,12 +168,11 @@ Pick the App according to your outcome:
   - How is the variable defined? (Data Dictionary)
   - What are the permissible values? (Data Dictionary)
 
-## Overview Scavenger Hunt
+## Let's try it!
 
-1.  How many categorical variables are there?
-1.  How many missing Cardiovascular Disease Cases are there?
+1.  How many categorical variables are there? (in R, we call them factors)
+1.  How many missing cases are there for your outcome?
 1.  What is the mean age for the dataset?
-1.  How is `oahi` calculated?
 
 ## What is the Category Tab for?
 
@@ -140,17 +184,24 @@ Pick the App according to your outcome:
 
 ## Categorical Tab
 
+
   - What percentages exist for my categorical variable? (Single Category)
   - Is my variable associated with outcome? (Category/Outcome)
   - Is my variable associated with other variables? (Crosstab)
   - Are the missing values of my variable evenly distributed? (Missing Data)
-  
-## Categorical Scavenger Hunt
 
-1. How many categories are there for `race`?
-1. Are the proportions of cvd cases balanced across `race`?
-1. If you are `male`, are you more likely to have cardiovascular disease?
-1. Is the proportion of missing data for `any_cvd` balanced across `race` categories? 
+## Categorical Example
+
+Do people with the `most` days of `LittleInterest` also have the `most` days of Depression?
+
+![](img/categorical.gif)
+
+  
+## Categories: Let's try it!
+
+1. How many categories are there for your outcome? 
+1. What is the category with the largest counts for your outcome? 
+1. Do the proportions of people with your outcome look the same for those who use marijuana versus those who don't use it?
 
 ## Continuous Tab
 
@@ -160,12 +211,40 @@ Pick the App according to your outcome:
 - Is my continous variable associated with another continous variable? (Correlation)
 - Is my continuous variable missing values? (Correlation)
 
-## Continuous Scavenger Hunt
+## Continuous Scatter
 
-1. As you get older, are you more likely to have CVD? 
-1. Is `age_s1` evenly distributed across `race`? If not, how are they distributed?
-1. Are `bmi_s1` and `neck20` correlated? Why do you think that's the case?
-1. Should we include both `bmi_s1` and `neck20` in our dataset?
+If you get less hours of sleep per night, does that mean you have a higher BMI?
+
+![](img/continuous-scatter.gif)
+
+## Continuous Boxplot
+
+If you get less sleep, are you more likely to be depressed?
+
+![](img/continuous-boxplot.gif)
+
+## Continuous: Let's Try it!
+
+- Is there something strange about `Age` in the dataset?
+- As you get older, does your `BMI` go up?
+- Do `Depressed` people have a higher systolic blood pressure than non depressed people?
+
+
+## Let's start the scavenger hunt
+
+- Depression Questions are here: 
+- Physical Activity Questions are here:
+- 
+
+
+## Let's learn from each other
+
+Each group should present the findings from 3 interesting questions:
+
+1. Where did you find it in the app? 
+2. What variables did you look at?
+3. What did you expect?
+4. What did you find?
 
 ## Congratulations
 
@@ -173,12 +252,11 @@ You are now a full fledged data explorer!
 
 ![https://waynepelletier.com/work/tasty-icons](img/merit.png)
 
-## Overall
 
-- Data exploration is fun and detective work
-- Be curious! Start with a question
-- Assess the impact of adding your covariate to the model
-    - Does the distribution look like other populations?
-    - Is it associated with your outcome?
-    - Is it associated with other variables?
-    - Is the data missing in a suspicious way?
+## Let's do more scavenger hunts
+
+Are there interesting public datasets that people want to look at?
+
+We can build apps for them!
+
+http://laderast.github.io/burro
