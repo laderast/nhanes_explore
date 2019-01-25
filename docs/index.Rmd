@@ -23,7 +23,10 @@ knitr::opts_chunk$set(echo = FALSE)
 
 ## Introductions
 
-
+- BioData Club
+- Ted Laderas
+- Jessica Minnier
+- Thomas Frohwein
 
 ## Please Note
 
@@ -33,6 +36,13 @@ This is done to maintain a psychologically safe and inclusive environment for ev
 
 If you violate the CoC, you may be asked to leave.  
 
+
+## These Slides are Here
+
+### http://bit.ly/data_nhanes
+
+- Put your post it up when you're ready!
+- If someone comes in late, please show them where the slides are
 
 ## Our Overall Goal  
 
@@ -219,7 +229,7 @@ If you get less hours of sleep per night, does that mean you have a higher BMI?
 
 ## Continuous Boxplot
 
-If you get less sleep, are you more likely to be depressed?
+If you have a lot of depressed episodes, do you also get less sleep?
 
 ![](img/continuous-boxplot.gif)
 
@@ -232,25 +242,36 @@ If you get less sleep, are you more likely to be depressed?
 
 ## Let's start the scavenger hunt
 
-- Depression Questions are here: 
-- Physical Activity Questions are here:
-- Type 2 Diabetes Questions are here: 
+- [Depression Questions](http://github.com/laderast/depression.md)
+- [Physical Activity Questions](http://github.com/laderast/phys_activity.md)
+- [Type 2 Diabetes Questions]()
 
 
 ## Let's learn from each other
 
-Each group should present the findings from 3 interesting questions:
+Each group should present the findings from 2-3 interesting questions:
 
 1. Where did you find it in the app? 
 2. What variables did you look at?
 3. What did you expect?
 4. What did you find?
 
+## Physical Activity Notes
+
+[Jess' excellent overview of physical activity in NHANES](https://github.com/jminnier/nhanes_explore/blob/master/explore.md)
+
+## Some Final Notes in NHANES
+
+- NHANES was designed with a very special sampling design, that was meant to be representative to the United States
+- There are weights that you must utilize for real modeling and analysis
+
 ## Congratulations
 
 You are now a full fledged data explorer!
 
-![https://waynepelletier.com/work/tasty-icons](img/merit.png)
+![](img/merit.png)
+https://waynepelletier.com/work/tasty-icons
+
 
 ## Please!
 
@@ -266,3 +287,5 @@ Are there other interesting public datasets that people want to look at?
 We can build apps for them!
 
 http://laderast.github.io/burro
+
+![](img/burro3.png)
