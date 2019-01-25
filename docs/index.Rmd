@@ -244,7 +244,7 @@ If you have a lot of depressed episodes, do you also get less sleep?
 
 - [Depression Questions](http://github.com/laderast/depression.md)
 - [Physical Activity Questions](http://github.com/laderast/phys_activity.md)
-- [Type 2 Diabetes Questions]()
+- [Type 2 Diabetes Questions](http://github.com/laderast/diabetes.md)
 
 
 ## Let's learn from each other
@@ -283,6 +283,8 @@ Fill out our post survey form - we need this info to do more workshops!
 ## Let's do more scavenger hunts
 
 Are there other interesting public datasets that people want to look at?
+
+Contact us! laderast@ohsu.edu
 
 We can build apps for them!
 
