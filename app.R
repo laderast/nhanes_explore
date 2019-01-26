@@ -38,12 +38,9 @@ covariates <- c("Gender", "Age", "SurveyYr", "Race1", "Race3" ,"MaritalStatus",
                 "BMI_WHO", "TotChol", "Depressed", "LittleInterest", 
                 "Pulse", "Diabetes", "DiabetesAge",
                 "PhysActive","PhysActiveDays","PhysActiveDaysAtLeast3",
-<<<<<<< refs/remotes/upstream/master
-                "SleepHrsNight", "SleepTrouble", "TVHrsDay", "AlcoholDay", "SmokeNow","Marijuana", "RegularMarij","HardDrugs")
-=======
                 "SleepHrsNight", "SleepTrouble", "SleepHrsNightCat","TVHrsDay", "AlcoholDay", 
-                "SmokeNow","Smoke100","Marijuana")
->>>>>>> added some covariates
+                "SmokeNow","Smoke100","Marijuana",
+                "RegularMarij","HardDrugs")
 
 NHANES <- NHANES %>% mutate(PhysActiveDaysAtLeast3=factor(1*(PhysActiveDays>=3),levels=c(0,1),labels=c("No","Yes")))
 
