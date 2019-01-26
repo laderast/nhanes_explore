@@ -172,7 +172,7 @@ ui <- dashboardPage(
           ),
           tabPanel("Correlation Explorer", 
                    fluidRow(
-                     column(width=4, selectInput("x_var", "Select Y Variable", 
+                     column(width=4, selectInput("x_var", "Select X Variable", 
                                                  choices=numericVars, selected = numericVars[1])),
                      column(width=4, selectInput("y_var", "Select Y Variable", 
                                                  choices=numericVars, selected = numericVars[2])),
