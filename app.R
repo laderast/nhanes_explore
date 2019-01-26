@@ -16,6 +16,7 @@ library(visdat)
 library(skimr)
 library(readr)
 library(NHANES)
+library(janitor)
 
 source("R/helper.R")
 
@@ -27,13 +28,26 @@ source("R/helper.R")
 data("NHANES")
 
 ##specify outcome variable here
-outcome_var <- c("Depressed")
+outcome_var <- c("PhysActive")
 ## specify covariates here (including outcome variable)
 covariates <- c("Gender", "Age", "SurveyYr", "Race1", "Race3" ,"MaritalStatus", 
                 "BMI", "HHIncome", "Education",
-                "BMI_WHO", "BPSysAve", "TotChol", "Depressed", "LittleInterest", 
-                "SleepHrsNight", "SleepTrouble", "TVHrsDay", "AlcoholDay", 
-                "Marijuana", "RegularMarij", "HardDrugs")
+                "Poverty", "Work", "HomeOwn",
+                "BPSysAve", "BPDiaAve", "Testosterone", "DirectChol",
+                "HealthGen","CompHrsDay",
+                "BMI_WHO", "TotChol", "Depressed", "LittleInterest", 
+                "Pulse", "Diabetes", "DiabetesAge",
+                "PhysActive","PhysActiveDays","PhysActiveDaysAtLeast3",
+                "SleepHrsNight", "SleepTrouble", "SleepHrsNightCat","TVHrsDay", "AlcoholDay", 
+                "SmokeNow","Smoke100","Marijuana",
+                "RegularMarij","HardDrugs")
+
+NHANES <- NHANES %>% mutate(
+  PhysActiveDaysAtLeast3=factor(1*(PhysActiveDays>=3),levels=c(0,1),labels=c("No","Yes")),
+  SleepHrsNightCat=case_when(SleepHrsNight<6 ~ "<6",
+                             dplyr::between(SleepHrsNight,6,9) ~ "6-9",
+                             SleepHrsNight>9 ~ ">9",
+                             TRUE ~ as.character(NA)))
 
 myDataFrame <- data.table(NHANES)[,covariates,with=FALSE]
 
@@ -48,6 +62,20 @@ numericVars <- setdiff(numericVars, remove_numeric)
 theme_set(theme_classic(base_size = 15))
 data_dictionary <- readr::read_csv("data/data_dictionary.csv") %>%
   filter(VariableName %in% covariates)
+
+data_dictionary <- data_dictionary %>%
+  add_row(VariableName = "PhysActiveDaysAtLeast3",
+          Definition = "PhysActiveDays>=3 ~ Yes, PhysActiveDays < 3 ~ No") %>%
+  add_row(VariableName = "SleepHrsNightCat",
+          Definition = "SleepHrsNight categorized into <6hrs, [6-9]hrs, >9hrs") %>%
+  arrange(VariableName)
+
+data_dictionary <- data_dictionary %>%
+  add_row(VariableName = "PhysActiveDaysAtLeast3",
+          Definition = "PhysActiveDays>=3 ~ Yes, PhysActiveDays < 3 ~ No") %>%
+  add_row(VariableName = "SleepHrsNightCat",
+          Definition = "SleepHrsNight categorized into <6hrs, [6-9]hrs, >9hrs") %>%
+  arrange(VariableName)
 
 
 ##Don't modify anything below here.
@@ -100,8 +128,10 @@ ui <- dashboardPage(
                 ),
           
                 tabPanel("Category/Outcome",
-                   selectInput(inputId = "condTab", "Select Variable to Calculate Proportions",
-                               choices=cat_no_outcome, selected=cat_no_outcome[1]),
+                   selectInput(inputId = "condTab1", "Select X-axis Variable to Calculate Proportions",
+                               choices=categoricalVars, selected=cat_no_outcome[1]),
+                   selectInput(inputId = "condTab2", "Select Fill/Outcome Variable",
+                               choices=outcome_var, selected=outcome_var),
                    plotOutput("proportionBarplot")
           
                    ),
@@ -109,7 +139,7 @@ ui <- dashboardPage(
                    selectInput(inputId = "crossTab1", "Select Crosstab Variable (x)", 
                                choices=categoricalVars, selected=categoricalVars[1]),
                    selectInput(inputId = "crossTab2", "Select Crosstab Variable (y)", 
-                               choices=categoricalVars, selected=categoricalVars[1]),
+                               choices=outcome_var, selected=outcome_var),
                    verbatimTextOutput("crossTab")
           ),
           
@@ -130,18 +160,24 @@ ui <- dashboardPage(
                    plotOutput("distPlot")
           ),
           tabPanel("Boxplot Explorer",
-                   fluidRow(column(width = 4, selectInput(inputId = "numericVarBox", "Select Numeric Variable", 
-                                                          choices = numericVars, selected=numericVars[1])),
-                            column(width=4,selectInput(inputId = "catVarBox", "Select Category to Condition on", 
-                                                       choices = categoricalVars, selected=categoricalVars[1]))),
+                   fluidRow(
+                     column(width = 4, selectInput(inputId = "numericVarBox", "Select Numeric Variable", 
+                                                   choices = numericVars, selected=numericVars[1])),
+                     column(width=4,selectInput(inputId = "catVarBox", "Select Category to Condition on", 
+                                                choices = categoricalVars, selected=categoricalVars[1])),
+                     column(width=4, selectInput(inputId = "facet_var_boxplot", "Select Facet Variable", 
+                                                 choices=c("NONE",categoricalVars), selected = "NONE"))
+                   ),
                    plotOutput("boxPlot")
           ),
           tabPanel("Correlation Explorer", 
                    fluidRow(
-                     column(width=4, selectInput("x_var", "Select Y Variable", 
+                     column(width=4, selectInput("x_var", "Select X Variable", 
                                                  choices=numericVars, selected = numericVars[1])),
                      column(width=4, selectInput("y_var", "Select Y Variable", 
-                                                 choices=numericVars, selected = numericVars[2]))
+                                                 choices=numericVars, selected = numericVars[2])),
+                     column(width=4, selectInput("facet_var", "Select Facet Variable", 
+                                                 choices=c("NONE",categoricalVars), selected = "NONE"))
                    ),
                    fluidRow(plotOutput("corr_plot"))
           ))
@@ -196,14 +232,40 @@ server <- function(input, output, session) {
   
   output$crossTab <- renderPrint({
     
-    out <- dataOut()[,c(input$crossTab1, input$crossTab2), with=FALSE]
-    tab <- table(out, useNA = "ifany")
+    tab <- dataOut() %>% 
+      tabyl(!!sym(input$crossTab1), !!sym(input$crossTab2)) %>% 
+      adorn_totals() %>%
+      adorn_percentages() %>% 
+      adorn_pct_formatting() %>% 
+      adorn_ns()
+    #out <- dataOut()[,c(input$crossTab1, input$crossTab2), with=FALSE]
+    #tab <- table(out, useNA = "ifany")
     tab
+  })
+  
+  observe({
+    condTab1_selected <- input$condTab1
+    condTab2_selected <- input$condTab2
+    
+    updateSelectInput(session, "condTab2",
+                      choices = setdiff(categoricalVars,condTab1_selected),
+                      selected = condTab2_selected)
+    
+    })
+  
+  observe({
+    crossTab1_selected <- input$crossTab1
+    crossTab2_selected <- input$crossTab2
+    
+    updateSelectInput(session, "crossTab2",
+                      choices = setdiff(categoricalVars,crossTab1_selected),
+                      selected = crossTab2_selected)
+    
   })
   
   proportionTable <- reactive({
     
-    out <- dataOut()[,c(input$condTab, outcome_var), with=FALSE]
+    out <- dataOut()[,c(input$condTab1, input$condTab2), with=FALSE]
     out
   })
   
@@ -215,13 +277,14 @@ server <- function(input, output, session) {
   
   output$proportionBarplot <- renderPlot({
     
-    print(input$condTab)
+    print(input$condTab1)
+    print(input$condTab2)
     
-    percent_table <- proportionTable() %>% data.frame() %>% group_by(!!sym(input$condTab)) %>%
-      count(!!sym(outcome_var)) %>% mutate(ratio=scales::percent(n/sum(n)))
+    percent_table <- proportionTable() %>% data.frame() %>% group_by(!!sym(input$condTab1)) %>%
+      count(!!sym(input$condTab2)) %>% mutate(ratio=scales::percent(n/sum(n)))
     
     proportionTable() %>% 
-      ggplot(aes_string(x=input$condTab, fill=outcome_var)) + 
+      ggplot(aes_string(x=input$condTab1, fill=input$condTab2)) + 
       geom_bar(position="fill", color="black") + theme(text=element_text(size=20), axis.text.x = element_text(angle = 90)) +
       geom_text(data = percent_table, mapping = aes(y=n, label=ratio), 
                 position=position_fill(vjust=0.5))
@@ -239,7 +302,11 @@ server <- function(input, output, session) {
   output$boxPlot <- renderPlot({
     outPlot <- ggplot(dataOut(), aes_string(x=input$catVarBox, y=input$numericVarBox, fill=input$catVarBox)) + 
       geom_boxplot() + theme(text=element_text(size=20), axis.text.x = element_text(angle=90))
-    outPlot
+    if(input$facet_var_boxplot=="NONE") {
+      outPlot
+    }else{
+      outPlot+facet_wrap(input$facet_var_boxplot)
+    }
   })
   
   output$data_dictionary <- renderDataTable(
@@ -255,9 +322,14 @@ server <- function(input, output, session) {
     
     corval <- signif(cor(xcol, ycol), digits = 3)
     
-    ggplot(dataOut(), aes_string(x=input$x_var, y=input$y_var)) +
+    p <- ggplot(dataOut(), aes_string(x=input$x_var, y=input$y_var)) +
       geom_miss_point() + stat_smooth(method=lm, se=FALSE) +
       ggtitle(paste(input$x_var, "vs.", input$y_var, "correlation =", corval)) 
+    if(input$facet_var=="NONE") {
+      p
+    }else{
+      p+facet_wrap(input$facet_var)
+    }
   })
   
 }
