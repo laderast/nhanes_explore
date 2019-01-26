@@ -42,7 +42,12 @@ covariates <- c("Gender", "Age", "SurveyYr", "Race1", "Race3" ,"MaritalStatus",
                 "SmokeNow","Smoke100","Marijuana",
                 "RegularMarij","HardDrugs")
 
-NHANES <- NHANES %>% mutate(PhysActiveDaysAtLeast3=factor(1*(PhysActiveDays>=3),levels=c(0,1),labels=c("No","Yes")))
+NHANES <- NHANES %>% mutate(
+  PhysActiveDaysAtLeast3=factor(1*(PhysActiveDays>=3),levels=c(0,1),labels=c("No","Yes")),
+  SleepHrsNightCat=case_when(SleepHrsNight<6 ~ "<6",
+                             dplyr::between(SleepHrsNight,6,9) ~ "6-9",
+                             SleepHrsNight>9 ~ ">9",
+                             TRUE ~ as.character(NA)))
 
 myDataFrame <- data.table(NHANES)[,covariates,with=FALSE]
 
@@ -57,6 +62,13 @@ numericVars <- setdiff(numericVars, remove_numeric)
 theme_set(theme_classic(base_size = 15))
 data_dictionary <- readr::read_csv("data/data_dictionary.csv") %>%
   filter(VariableName %in% covariates)
+
+data_dictionary <- data_dictionary %>%
+  add_row(VariableName = "PhysActiveDaysAtLeast3",
+          Definition = "PhysActiveDays>=3 ~ Yes, PhysActiveDays < 3 ~ No") %>%
+  add_row(VariableName = "SleepHrsNightCat",
+          Definition = "SleepHrsNight categorized into <6hrs, [6-9]hrs, >9hrs") %>%
+  arrange(VariableName)
 
 data_dictionary <- data_dictionary %>%
   add_row(VariableName = "PhysActiveDaysAtLeast3",
